@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
@@ -24,7 +23,7 @@ public class AsyncFileWriterTest {
 			sourceContent.add(i);
 		
 		System.out.println("Application started...");
-		AsyncFileWriter writer = new AsyncFileWriter(3, "C:/application", "Test.dat");
+		AsyncFileWriterV2 writer = new AsyncFileWriterV2("C:/application/Test.dat");
 		System.out.println("Starting writing...");
 		long start = System.currentTimeMillis();
 		sourceContent.parallelStream().forEach(line -> writer.writeLine(""+line));
@@ -37,9 +36,9 @@ public class AsyncFileWriterTest {
 	@Test
 	public void testMultipleLineWriter() throws Exception {
 		System.out.println("Application started...");
-		AsyncFileWriter writer = new AsyncFileWriter(3, "C:/application", "TestMultiLine.dat");
+		AsyncFileWriterV2 writer = new AsyncFileWriterV2("C:/application/TestMultiLine.dat");
 		ArrayList<ExecutableTask> taskList = Lists.newArrayList();
-		long batchSize = 1000000;
+		long batchSize = 500000;
 		
 		for(int taskId = 0; taskId < 10 ; taskId++ ){
 			long start= taskId * batchSize;
@@ -61,9 +60,9 @@ public class AsyncFileWriterTest {
 	private class ExecutableTask implements Callable<Void>{
 
 		private final List<String> records;
-		private final AsyncFileWriter writer;
+		private final AsyncFileWriterV2 writer;
 		
-		public ExecutableTask(long start, long end, AsyncFileWriter writer) {
+		public ExecutableTask(long start, long end, AsyncFileWriterV2 writer) {
 			super();
 			this.writer = writer;
 			this.records = Lists.newArrayList();
